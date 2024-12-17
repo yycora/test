@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YYCORA Time to Leave Office</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .countdown {
+            text-align: center;
+            font-size: 48px;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown" id="countdown">Loading...</div>
+
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const targetTime = new Date();
+            
+            // Set target time to today at 17:15
+            targetTime.setHours(17, 15, 0, 0);
+
+            // If current time is past 17:15, set target to tomorrow
+            if (now > targetTime) {
+                targetTime.setDate(targetTime.getDate() + 1);
+            }
+
+            const remainingTime = targetTime - now;
+
+            // Calculate hours, minutes, and seconds
+            const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+            if (remainingTime <= 0) {
+                document.getElementById('countdown').innerText = "Time to Leave Office!";
+            } else {
+                let timeString = "";
+                if (hours > 0) {
+                    timeString += `${hours} hours, `;
+                }
+                timeString += `${minutes} minutes and ${seconds} seconds`;
+                document.getElementById('countdown').innerText = timeString;
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+    </script>
+</body>
+</html>
