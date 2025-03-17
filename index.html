@@ -36,6 +36,15 @@
                 targetTime.setDate(targetTime.getDate() + 1);
             }
 
+            // Ensure countdown only runs between 9:00 AM and 5:15 PM
+            const startCountdown = new Date();
+            startCountdown.setHours(9, 0, 0, 0);
+
+            if (now < startCountdown || now > targetTime) {
+                document.getElementById('countdown').innerText = "Countdown starts at 9:00 AM.";
+                return;
+            }
+
             const remainingTime = targetTime - now;
 
             // Calculate hours, minutes, and seconds
