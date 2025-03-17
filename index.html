@@ -6,7 +6,7 @@
     <title>YYCORA Time to Leave Office</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -14,22 +14,49 @@
             height: 100vh;
             background-color: #f4f4f4;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
-        .countdown, .date-time, .holiday {
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            margin: 10px;
-            font-size: 24px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .date-time, .holiday, .countdown {
+            margin: 20px 0;
+            font-size: 1.2rem;
         }
         .countdown {
-            font-size: 48px;
+            font-size: 2.5rem;
             color: #007bff;
+            font-weight: bold;
+        }
+        .holiday {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .date-time {
+            color: #6c757d;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
         }
     </style>
 </head>
 <body>
-    <div class="date-time" id="date-time">Loading date and time...</div>
-    <div class="holiday" id="holiday-status">Checking holiday status...</div>
-    <div class="countdown" id="countdown">Loading countdown...</div>
+    <div class="container fade-in">
+        <div class="date-time" id="date-time">Loading date and time...</div>
+        <div class="holiday" id="holiday-status">Checking holiday status...</div>
+        <div class="countdown" id="countdown">Loading countdown...</div>
+    </div>
 
     <script>
         async function fetchHolidays() {
