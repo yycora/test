@@ -6,124 +6,34 @@
     <title>YYCORA Time to Leave Office</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             height: 100vh;
             background-color: #f4f4f4;
             color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-        }
-        .date-time, .holiday, .countdown {
-            margin: 20px 0;
-            font-size: 1.2rem;
         }
         .countdown {
-            font-size: 2.5rem;
-            color: #007bff;
-            font-weight: bold;
-        }
-        .holiday {
-            color: #28a745;
-            font-weight: bold;
-        }
-        .date-time {
-            color: #6c757d;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .fade-in {
-            animation: fadeIn 1s ease-in;
+            text-align: center;
+            font-size: 48px;
         }
     </style>
 </head>
 <body>
-    <div class="container fade-in">
-        <div class="date-time" id="date-time">Loading date and time...</div>
-        <div class="holiday" id="holiday-status">Checking holiday status...</div>
-        <div class="countdown" id="countdown">Loading countdown...</div>
-    </div>
+    <div class="countdown" id="countdown">Loading...</div>
 
     <script>
-        async function fetchHolidays() {
-            try {
-                const response = await fetch('holidays.json'); // Fetch the holidays.json file
-                if (!response.ok) {
-                    throw new Error('Failed to load holidays.json');
-                }
-                return await response.json();
-            } catch (error) {
-                console.error('Error loading holidays:', error);
-                return []; // Default to no holidays if an error occurs
-            }
-        }
-
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                timeZone: "Asia/Hong_Kong",
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false
-            };
-            const dateTimeString = now.toLocaleString("en-US", options);
-            document.getElementById('date-time').innerText = `Current Date and Time: ${dateTimeString}`;
-        }
-
-        async function updateCountdown() {
-            const holidays = await fetchHolidays();
+        function updateCountdown() {
             const now = new Date();
             const targetTime = new Date();
-
+            
             // Set target time to today at 17:15
             targetTime.setHours(17, 15, 0, 0);
 
             // If current time is past 17:15, set target to tomorrow
             if (now > targetTime) {
                 targetTime.setDate(targetTime.getDate() + 1);
-            }
-
-            // Ensure countdown only runs between 9:00 AM and 5:15 PM
-            const startCountdown = new Date();
-            startCountdown.setHours(9, 0, 0, 0);
-
-            // Check if today is a holiday
-            const today = now.toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-            const holidayToday = holidays.find(holiday => {
-                const holidayDate = new Date(holiday.date).toISOString().split('T')[0];
-                return holidayDate === today;
-            });
-
-            if (holidayToday) {
-                document.getElementById('holiday-status').innerText = `Today is a holiday: ${holidayToday.holiday} 🎉`;
-                document.getElementById('countdown').innerText = "";
-                return;
-            } else {
-                document.getElementById('holiday-status').innerText = "Today is not a holiday.";
-            }
-
-            if (now < startCountdown || now > targetTime) {
-                document.getElementById('countdown').innerText = "Countdown starts at 9:00 AM.";
-                return;
             }
 
             const remainingTime = targetTime - now;
@@ -145,13 +55,8 @@
             }
         }
 
-        // Update the current date and time every second
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-
-        // Update the countdown every second
         setInterval(updateCountdown, 1000);
-        updateCountdown();
+        updateCountdown(); // Initial call
     </script>
 </body>
 </html>
