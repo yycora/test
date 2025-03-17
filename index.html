@@ -62,10 +62,13 @@
         async function fetchHolidays() {
             try {
                 const response = await fetch('holidays.json'); // Fetch the holidays.json file
+                if (!response.ok) {
+                    throw new Error('Failed to load holidays.json');
+                }
                 return await response.json();
             } catch (error) {
                 console.error('Error loading holidays:', error);
-                return [];
+                return []; // Default to no holidays if an error occurs
             }
         }
 
@@ -105,17 +108,13 @@
 
             // Check if today is a holiday
             const today = now.toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-            const isHoliday = holidays.some(holiday => {
+            const holidayToday = holidays.find(holiday => {
                 const holidayDate = new Date(holiday.date).toISOString().split('T')[0];
                 return holidayDate === today;
             });
 
-            if (isHoliday) {
-                const todayHoliday = holidays.find(holiday => {
-                    const holidayDate = new Date(holiday.date).toISOString().split('T')[0];
-                    return holidayDate === today;
-                });
-                document.getElementById('holiday-status').innerText = `Today is a holiday: ${todayHoliday.holiday} 🎉`;
+            if (holidayToday) {
+                document.getElementById('holiday-status').innerText = `Today is a holiday: ${holidayToday.holiday} 🎉`;
                 document.getElementById('countdown').innerText = "";
                 return;
             } else {
