@@ -10,24 +10,60 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
             background-color: #f4f4f4;
             color: #333;
         }
-        .countdown {
+        .countdown, .date-time, .holiday {
             text-align: center;
+            margin: 10px;
+            font-size: 24px;
+        }
+        .countdown {
             font-size: 48px;
+            color: #007bff;
         }
     </style>
 </head>
 <body>
-    <div class="countdown" id="countdown">Loading...</div>
+    <div class="date-time" id="date-time">Loading date and time...</div>
+    <div class="holiday" id="holiday-status">Checking holiday status...</div>
+    <div class="countdown" id="countdown">Loading countdown...</div>
 
     <script>
-        function updateCountdown() {
+        async function fetchHolidays() {
+            try {
+                const response = await fetch('holidays.json'); // Fetch the holidays.json file
+                return await response.json();
+            } catch (error) {
+                console.error('Error loading holidays:', error);
+                return [];
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                timeZone: "Asia/Hong_Kong",
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            };
+            const dateTimeString = now.toLocaleString("en-US", options);
+            document.getElementById('date-time').innerText = `Current Date and Time: ${dateTimeString}`;
+        }
+
+        async function updateCountdown() {
+            const holidays = await fetchHolidays();
             const now = new Date();
             const targetTime = new Date();
-            
+
             // Set target time to today at 17:15
             targetTime.setHours(17, 15, 0, 0);
 
@@ -39,6 +75,25 @@
             // Ensure countdown only runs between 9:00 AM and 5:15 PM
             const startCountdown = new Date();
             startCountdown.setHours(9, 0, 0, 0);
+
+            // Check if today is a holiday
+            const today = now.toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            const isHoliday = holidays.some(holiday => {
+                const holidayDate = new Date(holiday.date).toISOString().split('T')[0];
+                return holidayDate === today;
+            });
+
+            if (isHoliday) {
+                const todayHoliday = holidays.find(holiday => {
+                    const holidayDate = new Date(holiday.date).toISOString().split('T')[0];
+                    return holidayDate === today;
+                });
+                document.getElementById('holiday-status').innerText = `Today is a holiday: ${todayHoliday.holiday} 🎉`;
+                document.getElementById('countdown').innerText = "";
+                return;
+            } else {
+                document.getElementById('holiday-status').innerText = "Today is not a holiday.";
+            }
 
             if (now < startCountdown || now > targetTime) {
                 document.getElementById('countdown').innerText = "Countdown starts at 9:00 AM.";
@@ -64,8 +119,13 @@
             }
         }
 
+        // Update the current date and time every second
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Update the countdown every second
         setInterval(updateCountdown, 1000);
-        updateCountdown(); // Initial call
+        updateCountdown();
     </script>
 </body>
 </html>
